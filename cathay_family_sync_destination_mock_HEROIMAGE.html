@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Cathay Family Sync — Destination Quiz (Fixed Mock)</title>
+  <style>
+    :root{
+      --jade:#006a5b;
+      --jade-dark:#005247;
+      --mist:#f4f7f6;
+      --ink:#102a2a;
+      --muted:#5b6b6b;
+      --card:#ffffff;
+      --radius:18px;
+      --shadow:0 8px 30px rgba(16,42,42,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--ink); background:url('/mnt/data/Screenshot 2025-11-24 at 11.06.53 AM.png') center/cover no-repeat;
+    }
+    header{
+      position:sticky; top:0; z-index:10;
+      background:rgba(255,255,255,.9); backdrop-filter:saturate(140%) blur(8px);
+      border-bottom:1px solid #e7eceb;
+    }
+    .wrap{max-width:1040px; margin:0 auto; padding:0 20px;}
+    .nav{display:flex; align-items:center; justify-content:space-between; padding:14px 0;}
+    .brand{display:flex; align-items:center; gap:10px; font-weight:700;}
+    .logo{
+      width:34px;height:34px;border-radius:10px; background:var(--jade);
+      display:grid; place-items:center; color:#fff; font-weight:800;
+    }
+    .pill{
+      font-size:12px; color:var(--jade-dark); background:#e7f2f0; padding:4px 8px; border-radius:999px; font-weight:600;
+    }
+    main{padding:26px 0 70px;}
+    .hero{
+      display:grid; grid-template-columns:1.1fr .9fr; gap:22px; align-items:center;
+      padding:18px; background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+    }
+    .hero h1{font-size:40px; margin:0 0 8px;}
+    .hero p{margin:0 0 14px; color:var(--muted); line-height:1.6;}
+    .hero .img{
+      height:290px; border-radius:14px; background:
+        radial-gradient(1200px 500px at 100% 0%, #eaf7f4, transparent 60%),
+        linear-gradient(135deg,#f7fbfa,#e8f0ee);
+      display:flex; align-items:flex-end; justify-content:flex-start; padding:16px; color:var(--jade-dark);
+      border:1px dashed #dbe7e4;
+      font-weight:600;
+    }
+    .btn{
+      display:inline-flex; align-items:center; gap:8px; border:none; cursor:pointer;
+      background:var(--jade); color:white; padding:12px 16px; border-radius:12px; font-weight:700;
+      box-shadow:0 6px 18px rgba(0,106,91,.22);
+      transition:transform .06s ease, background .2s ease;
+    }
+    .btn:hover{background:var(--jade-dark)}
+    .btn.secondary{
+      background:#fff; color:var(--jade-dark); border:1px solid #d9e5e3; box-shadow:none;
+    }
+    .btn:disabled{opacity:.5; cursor:not-allowed; background:#9bb8b2;}
+    .grid-4{display:grid; grid-template-columns:repeat(4,1fr); gap:12px;}
+    .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
+    .card{
+      background:var(--card); border-radius:14px; padding:14px; border:1px solid #edf1f0; box-shadow:var(--shadow);
+    }
+    .persona{
+      display:flex; flex-direction:column; gap:6px; min-height:170px;
+      border-top:4px solid var(--jade);
+    }
+    .persona h3{margin:4px 0 0; font-size:18px;}
+    .persona p{margin:0; color:var(--muted); font-size:14px; line-height:1.5;}
+    .section{margin-top:22px;}
+    .section h2{font-size:22px; margin:0 0 8px;}
+    .sub{color:var(--muted); margin:0 0 10px; line-height:1.6;}
+    .steps{display:flex; gap:10px; flex-wrap:wrap;}
+    .step{background:#fff; border:1px solid #e7eceb; padding:8px 10px; border-radius:12px; font-size:13px; color:var(--muted)}
+    .quiz-shell{display:grid; grid-template-columns:300px 1fr; gap:14px; align-items:start;}
+    .sticky{position:sticky; top:76px;}
+    .side{padding:12px; background:#fff; border:1px solid #e7eceb; border-radius:14px;}
+    .toggle{display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:6px;}
+    .toggle button{
+      padding:10px; border-radius:10px; border:1px solid #dbe7e4; background:#fff; font-weight:700; cursor:pointer;
+      color:var(--jade-dark);
+    }
+    .toggle button.active{background:#e7f2f0; border-color:#cfe6e1;}
+    .progress{height:8px;background:#eef3f2;border-radius:999px; overflow:hidden; margin-top:10px;}
+    .progress > div{height:100%; width:0%; background:var(--jade); transition:width .25s ease;}
+    .qcard{padding:16px; background:#fff; border:1px solid #e7eceb; border-radius:16px; box-shadow:var(--shadow);}
+    .qmeta{display:flex; justify-content:space-between; color:var(--muted); font-size:13px;}
+    .qtitle{font-size:20px; margin:6px 0 12px;}
+    .options{display:grid; gap:8px;}
+    .opt{
+      display:flex; gap:10px; align-items:flex-start; padding:12px; border-radius:12px; border:1px solid #e7eceb; cursor:pointer; background:#fff;
+      transition:background .12s ease,border .12s ease;
+    }
+    .opt:hover{background:#f8fbfa; border-color:#d2e3df}
+    .opt input{margin-top:3px}
+    .opt.selected{background:#eaf7f4; border-color:#c6e2dc}
+    .qnav{display:flex; justify-content:space-between; margin-top:12px;}
+    .chips{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;}
+    .chip{font-size:12px; background:#f0f5f4; color:var(--muted); padding:4px 8px; border-radius:999px;}
+    .result{display:grid; grid-template-columns:1.05fr .95fr; gap:14px;}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; font-weight:800; background:#e7f2f0; color:var(--jade-dark);
+      font-size:13px;
+    }
+    .big{font-size:28px; margin:8px 0 6px;}
+    .muted{color:var(--muted)}
+    .plan{display:grid; gap:8px; margin-top:8px;}
+    .plan .row{
+      background:#fff; border:1px solid #e7eceb; border-radius:12px; padding:10px 12px;
+      display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
+    }
+    .row small{color:var(--muted)}
+    .footer{margin-top:28px; color:var(--muted); font-size:13px; text-align:center;}
+    .dest-card{border-top:4px solid var(--jade); cursor:pointer; transition:transform .08s ease, border .15s ease;}
+    .dest-card:hover{transform:translateY(-1px)}
+    .dest-card.selected{border-top-color:#d4a017; outline:2px solid #f2e6b8;}
+    .dest-thumb{
+      width:100%;
+      height:120px;
+      object-fit:cover;
+      border-radius:10px;
+      border:1px solid #e7eceb;
+      margin-bottom:8px;
+      display:block;
+    }
+    select{
+      width:100%; padding:10px 12px; border-radius:10px; border:1px solid #dbe7e4; background:#fff; font-weight:600; color:var(--ink);
+    }
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr}
+      .quiz-shell{grid-template-columns:1fr}
+      .result{grid-template-columns:1fr}
+      .grid-4{grid-template-columns:1fr 1fr}
+      .grid-3{grid-template-columns:1fr}
+    }
+    @media (max-width:520px){
+      .grid-4{grid-template-columns:1fr}
+      .hero h1{font-size:32px}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <div class="brand">
+      <div class="logo">CX</div>
+      <div>
+        Cathay Family Sync
+        <div class="pill">Destination prototype (fixed)</div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step" id="stepLabel">Step 1: Choose destination</div>
+      <div class="step" id="whoLabel">Traveller: —</div>
+      <div class="step" id="destLabel">Destination: —</div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- LANDING -->
+  <section id="landing" class="hero">
+    <div>
+      <span class="badge">Father’s / Mother’s Day prototype</span>
+      <h1>Sync your travel styles.<br/>Build a day that works for both.</h1>
+      <p>
+        Start by choosing a destination. Parent and child answer separately,
+        then we’ll match your travel characters and generate a destination-ready day plan.
+      </p>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn" onclick="scrollToSection('destinations')">Choose destination</button>
+        <button class="btn secondary" onclick="scrollToSection('about')">How it works</button>
+      </div>
+      <div class="chips">
+        <div class="chip">Destination planner</div>
+        <div class="chip">4 travel characters</div>
+        <div class="chip">Family Sync type</div>
+        <div class="chip">Day-plan generator</div>
+      </div>
+    </div>
+    <div class="img" aria-hidden="true" style="background:linear-gradient(135deg, #005a50 0%, #007a6a 55%, #0a8b78 100%); border:none; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.35);">
+      <div style="background:rgba(0,0,0,.35); padding:10px 12px; border-radius:10px;">
+        Cathay Family Sync
+      </div>
+    </div>
+  </section>
+
+  <!-- DESTINATION PICK -->
+  <section id="destinations" class="section card">
+    <h2>Pick your destination</h2>
+    <p class="sub">For mock purposes, we’re showing a few popular Cathay routes.</p>
+
+    <div class="grid-3" id="destGrid"></div>
+
+    <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+      <button class="btn" id="continueBtn" onclick="confirmDestination()">Continue to quiz</button>
+      <div style="flex:1; min-width:220px">
+        <select id="destSelect" onchange="selectDestination(this.value)"></select>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section card">
+    <h2>Meet the 4 travel characters</h2>
+    <p class="sub">Simple, MBTI-like archetypes with a Cathay travelling twist.</p>
+    <div class="grid-4">
+      <div class="card persona">
+        <h3>Explorer</h3>
+        <p><b>Superpower:</b> Curious, energetic, loves hidden gems.</p>
+        <p><b>Blind spot:</b> Can overpack the day.</p>
+      </div>
+      <div class="card persona">
+        <h3>Relaxer</h3>
+        <p><b>Superpower:</b> Savours pace, comfort, and quiet moments.</p>
+        <p><b>Blind spot:</b> May skip “must-see” spots.</p>
+      </div>
+      <div class="card persona">
+        <h3>Shopper / Foodie Hunter</h3>
+        <p><b>Superpower:</b> Finds the best local eats & souvenirs.</p>
+        <p><b>Blind spot:</b> Time can disappear in markets.</p>
+      </div>
+      <div class="card persona">
+        <h3>Planner</h3>
+        <p><b>Superpower:</b> Smooth, low-stress, time-smart trips.</p>
+        <p><b>Blind spot:</b> Less flexible to surprises.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>How it works</h2>
+      <ol class="sub" style="margin-top:8px;">
+        <li>Choose a destination.</li>
+        <li>Parent and child take the quiz separately.</li>
+        <li>We generate each person’s travel character.</li>
+        <li>We match you into a Family Sync type.</li>
+        <li>We generate a destination-based day plan.</li>
+      </ol>
+      <button class="btn" onclick="scrollToSection('destinations')">Pick destination to start</button>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="section" style="display:none;">
+    <div class="quiz-shell">
+      <aside class="side sticky">
+        <h4>Traveller</h4>
+        <div class="toggle">
+          <button id="btnParent" onclick="switchUser('parent')">Parent</button>
+          <button id="btnChild" onclick="switchUser('child')">Child</button>
+        </div>
+        <div class="progress"><div id="bar"></div></div>
+        <div class="sub" style="margin-top:10px;">
+          Answer honestly — there’s no “right” style.
+        </div>
+        <div class="section">
+          <h4>Questions</h4>
+          <div id="qIndexList" class="chips"></div>
+        </div>
+      </aside>
+
+      <div class="qcard">
+        <div class="qmeta">
+          <div id="qCounter">Q1 / 12</div>
+          <div id="qSection">Pace & Energy</div>
+        </div>
+        <div id="qText" class="qtitle">…</div>
+        <div id="qOptions" class="options"></div>
+
+        <div class="qnav">
+          <button class="btn secondary" onclick="prevQ()">Back</button>
+          <button class="btn" id="nextBtn" onclick="nextQ()">Next</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results" class="section card" style="display:none;">
+    <div class="result">
+      <div>
+        <span class="badge" id="syncBadge">Family Sync Type</span>
+        <div class="big" id="syncTitle">—</div>
+        <p class="muted" id="syncDesc">—</p>
+
+        <div class="section">
+          <h2>Your day plan for <span id="destNameInline">—</span></h2>
+          <p class="sub">A balanced template, grounded in the destination’s natural “zones”.</p>
+          <div class="plan" id="planBox"></div>
+        </div>
+
+        <div class="section">
+          <h2>Expectation cards</h2>
+          <p class="sub">Share these before your trip to keep everyone in sync.</p>
+          <div id="expectBox" class="chips"></div>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;">
+          <button class="btn" onclick="fullRestart()">Start over</button>
+          <button class="btn secondary" onclick="copyShare()">Copy share tile text</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Destination</h2>
+        <img id="destHeroImg" style="width:100%; height:160px; object-fit:cover; border-radius:10px; border:1px solid #e7eceb; margin-bottom:8px;" alt="Destination hero" />
+        <div class="sub" id="destDetail">—</div>
+
+        <div class="section">
+          <h2>Parent result</h2>
+          <div id="parentRes" class="sub">—</div>
+          <div style="height:10px"></div>
+          <h2>Child result</h2>
+          <div id="childRes" class="sub">—</div>
+        </div>
+
+        <div class="section">
+          <h2>How Cathay helps</h2>
+          <p class="sub" id="cxHelp">—</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">Prototype only — routes and zones are placeholders for internal demo.</div>
+  </section>
+
+</main>
+
+<script>
+  // --- DATA ---
+  const personas = ["Explorer","Relaxer","Shopper","Planner"];
+
+  const destinations = {
+    "tokyo":{
+      name:"Tokyo",
+      image:"https://upload.wikimedia.org/wikipedia/commons/7/71/Crowded_Shibuya_street.jpg",
+      vibe:"Neighbourhood-hopping meets calm gardens and world-class eats.",
+      zones:{
+        culture:["Asakusa heritage loop","Ueno museums + park"],
+        discovery:["Shimokitazawa side streets","Kichijoji stroll"],
+        shopping:["Ginza / Nihombashi premium streets","Shibuya / Harajuku trend loop"],
+        rest:["Meiji Jingu / Yoyogi green break","Kissaten café reset"],
+        evening:["Odaiba bay view","Shinjuku skyline + easy dinner"]
+      }
+    },
+    "taipei":{
+      name:"Taipei",
+      image:"https://upload.wikimedia.org/wikipedia/commons/2/2b/Taipeh_Huaxi_Night_Market_2.jpg",
+      vibe:"Easy comfort travel: short transfers, night markets, hot springs nearby.",
+      zones:{
+        culture:["Longshan Temple + old town","Dadaocheng riverside heritage"],
+        discovery:["Songshan Cultural Park","Tamsui mellow stroll"],
+        shopping:["Ximending browsing loop","Zhongshan boutique streets"],
+        rest:["Tea house break in Maokong","Beitou hot spring pause"],
+        evening:["Shilin / Raohe night market","Elephant Mountain sunset"]
+      }
+    },
+    "london":{
+      name:"London",
+      image:"https://upload.wikimedia.org/wikipedia/commons/b/b2/Westminster_Bridge_with_shadows_and_Big_Ben.jpg",
+      vibe:"Big landmarks with cosy pauses — perfect for mixed energy levels.",
+      zones:{
+        culture:["Westminster landmark walk","British Museum / Bloomsbury"],
+        discovery:["Notting Hill side streets","South Bank riverside"],
+        shopping:["Covent Garden + Soho","Oxford Street / Regent Street"],
+        rest:["Hyde Park picnic break","Riverside café reset"],
+        evening:["Trafalgar / Piccadilly lights","Thames dinner cruise area"]
+      }
+    }
+  };
+
+  const questions = [
+    {section:"Pace & Energy", text:"Your ideal holiday morning looks like…", options:[
+      {t:"Breakfast then straight out exploring", p:"Explorer"},
+      {t:"Sleep in, coffee, take it slow", p:"Relaxer"},
+      {t:"Market stroll / shopping street first", p:"Shopper"},
+      {t:"Check schedule, leave on time", p:"Planner"},
+    ]},
+    {section:"Pace & Energy", text:"If we’re behind schedule, you’d rather…", options:[
+      {t:"Skip a stop and keep moving", p:"Explorer"},
+      {t:"Slow down anyway — it’s okay", p:"Relaxer"},
+      {t:"Cut non-essential parts and keep a food/shopping buffer", p:"Shopper"},
+      {t:"Re-optimise the route immediately", p:"Planner"},
+    ]},
+    {section:"Pace & Energy", text:"How many big highlights per day feels right?", options:[
+      {t:"3–4 highlights — full day", p:"Explorer"},
+      {t:"1–2 highlights — leave room to rest", p:"Relaxer"},
+      {t:"2 highlights + free roaming", p:"Shopper"},
+      {t:"Whatever the plan says, as long as it’s smooth", p:"Planner"},
+    ]},
+    {section:"Comfort & Style", text:"Long-haul flight priorities:", options:[
+      {t:"Window seat / excitement / view", p:"Explorer"},
+      {t:"Comfort + quiet", p:"Relaxer"},
+      {t:"Easy access to snacks & browsing", p:"Shopper"},
+      {t:"Seat choice based on plan & timing", p:"Planner"},
+    ]},
+    {section:"Comfort & Style", text:"You feel happiest when the day has…", options:[
+      {t:"A surprise corner or hidden spot", p:"Explorer"},
+      {t:"Plenty of rest breaks", p:"Relaxer"},
+      {t:"A great food or shopping find", p:"Shopper"},
+      {t:"A clear timeline", p:"Planner"},
+    ]},
+    {section:"Comfort & Style", text:"Walking vs transport:", options:[
+      {t:"Walk as much as possible", p:"Explorer"},
+      {t:"Take transport, save energy", p:"Relaxer"},
+      {t:"Walk if the streets are worth browsing", p:"Shopper"},
+      {t:"Decide based on efficiency", p:"Planner"},
+    ]},
+    {section:"Decisions", text:"When choosing where to eat:", options:[
+      {t:"Try something local even if unknown", p:"Explorer"},
+      {t:"Comfortable and reliable", p:"Relaxer"},
+      {t:"Famous must-try spots", p:"Shopper"},
+      {t:"Pre-researched or booked places", p:"Planner"},
+    ]},
+    {section:"Decisions", text:"If you want different things, you usually…", options:[
+      {t:"Split up and meet later", p:"Explorer"},
+      {t:"Choose the calmer option", p:"Relaxer"},
+      {t:"Find a combo (food + shops)", p:"Shopper"},
+      {t:"Discuss and lock a plan", p:"Planner"},
+    ]},
+    {section:"Decisions", text:"Your must-have on a trip:", options:[
+      {t:"Freedom to improvise", p:"Explorer"},
+      {t:"A comfortable base/hotel", p:"Relaxer"},
+      {t:"A list of eats & buys", p:"Shopper"},
+      {t:"A clear itinerary", p:"Planner"},
+    ]},
+    {section:"Memory-making", text:"Best souvenir is…", options:[
+      {t:"A story/photo from somewhere unique", p:"Explorer"},
+      {t:"A restful feeling", p:"Relaxer"},
+      {t:"Something to bring home", p:"Shopper"},
+      {t:"A seamless trip with no stress", p:"Planner"},
+    ]},
+    {section:"Cathay Twist", text:"Airport time:", options:[
+      {t:"Explore the lounge / gates / new corners", p:"Explorer"},
+      {t:"Find a quiet seat and relax", p:"Relaxer"},
+      {t:"Duty-free browse", p:"Shopper"},
+      {t:"Arrive early and follow steps", p:"Planner"},
+    ]},
+    {section:"Cathay Twist", text:"Your ideal Cathay Family Sync day includes…", options:[
+      {t:"One hidden gem", p:"Explorer"},
+      {t:"Comfort pacing & rest stops", p:"Relaxer"},
+      {t:"Food & shopping clusters", p:"Shopper"},
+      {t:"Time-optimised route", p:"Planner"},
+    ]},
+  ];
+
+  const syncTypes = {
+    "Explorer|Relaxer":{
+      name:"Balanced Wanderers",
+      desc:"A lively curiosity with built-in breathing room. You’ll see a lot without burning out.",
+      help:"Cathay’s city guidance can cluster sights near comfortable rest breaks.",
+      expects:["I’m happy to slow down after 2 hours.","Let’s keep one surprise slot.","Rest stops matter."]
+    },
+    "Explorer|Shopper":{
+      name:"Curious Collectors",
+      desc:"You’re happiest when discovery leads to something delicious or worth bringing home.",
+      help:"Cathay can group markets with nearby cultural stops to keep momentum smooth.",
+      expects:["Markets are part of the memory.","One highlight beats ten rushed stops.","Let’s keep flexible time."]
+    },
+    "Explorer|Planner":{
+      name:"Purposeful Adventurers",
+      desc:"Fast-moving and efficient — you’ll cover ground and still feel in control.",
+      help:"Cathay’s pre-trip tools help lock transit and timing so spontaneity stays safe.",
+      expects:["If we’re late, we adapt fast.","Let’s pre-book the must-dos.","Surprises are ok inside a plan."]
+    },
+    "Relaxer|Shopper":{
+      name:"Stroll & Savor",
+      desc:"Slow, sensory travel — cafés, markets, and the art of wandering gently.",
+      help:"Cathay’s short-loop suggestions keep walks easy with good food stops.",
+      expects:["Let’s avoid long walking loops.","Food stops are the highlight.","Free roam is important."]
+    },
+    "Planner|Relaxer":{
+      name:"Smooth Sailers",
+      desc:"Calm and predictable. A steady rhythm where comfort comes first.",
+      help:"Cathay’s lounge and boarding support reinforce a stress-free tempo.",
+      expects:["Comfort beats speed.","Let’s lock one key booking.","We can leave early if tired."]
+    },
+    "Planner|Shopper":{
+      name:"Well-Curated Trackers",
+      desc:"A guided hunt — you’ll hit the best spots without chaos.",
+      help:"Cathay’s curated lists help prioritise top markets and food stops efficiently.",
+      expects:["We should cluster spots close by.","Let’s keep a checklist.","Time buffers help everyone."]
+    }
+  };
+
+  // --- STATE ---
+  let state = {
+    destination:null,
+    user:"parent",
+    qIndex:0,
+    answers:{ parent:Array(questions.length).fill(null), child:Array(questions.length).fill(null) }
+  };
+
+  // --- UI HELPERS ---
+  const el = id => document.getElementById(id);
+  function scrollToSection(id){ document.getElementById(id).scrollIntoView({behavior:"smooth"}); }
+
+  // SHOW/HIDE GROUPS
+  function showIntro(){
+    el("landing").style.display="block";
+    el("destinations").style.display="block";
+    el("about").style.display="block";
+    el("quiz").style.display="none";
+    el("results").style.display="none";
+  }
+  function showQuizOnly(){
+    el("landing").style.display="none";
+    el("destinations").style.display="none";
+    el("about").style.display="none";
+    el("quiz").style.display="block";
+    el("results").style.display="none";
+  }
+  function showResultsOnly(){
+    el("landing").style.display="none";
+    el("destinations").style.display="none";
+    el("about").style.display="none";
+    el("quiz").style.display="none";
+    el("results").style.display="block";
+  }
+
+  // DESTINATIONS RENDER
+  function initDestinations(){
+    const grid = el("destGrid");
+    const select = el("destSelect");
+    grid.innerHTML=""; select.innerHTML="";
+    Object.entries(destinations).forEach(([key, d], i)=>{
+      const opt = document.createElement("option");
+      opt.value=key; opt.textContent=d.name;
+      select.appendChild(opt);
+
+      const card = document.createElement("div");
+      card.className="card dest-card";
+      card.id="dest-"+key;
+      card.onclick=()=>selectDestination(key);
+
+      card.innerHTML = `
+        <img class="dest-thumb" src="${d.image}" alt="${d.name} destination image" />
+        <h3 style="margin:0 0 6px">${d.name}</h3>
+        <p class="sub" style="margin:0">${d.vibe}</p>
+      `;
+      grid.appendChild(card);
+
+      if(i===0 && !state.destination) selectDestination(key);
+    });
+  }
+
+  function selectDestination(key){
+    state.destination = key;
+    Object.keys(destinations).forEach(k=>{
+      const c = el("dest-"+k);
+      if(c) c.classList.toggle("selected", k===key);
+    });
+    el("destSelect").value = key;
+    updateDestLabels();
+  }
+
+  function updateDestLabels(){
+    const d = destinations[state.destination];
+    el("destLabel").textContent = `Destination: ${d ? d.name : "—"}`;
+  }
+
+  function confirmDestination(){
+    if(!state.destination){ alert("Please pick a destination."); return; }
+    startQuiz();
+  }
+
+  // QUIZ
+  function startQuiz(){
+    showQuizOnly();
+    state.user = "parent";
+    state.qIndex = firstUnansweredIndex("parent");
+    updateStepLabels();
+    renderQ();
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+
+  function switchUser(user){
+    state.user = user;
+    state.qIndex = firstUnansweredIndex(user);
+    updateStepLabels();
+    renderQ();
+  }
+
+  function firstUnansweredIndex(user){
+    const i = state.answers[user].findIndex(a => a===null);
+    return i===-1 ? questions.length-1 : i;
+  }
+
+  function updateStepLabels(){
+    el("btnParent").classList.toggle("active", state.user==="parent");
+    el("btnChild").classList.toggle("active", state.user==="child");
+    el("whoLabel").textContent = `Traveller: ${state.user==="parent"?"Parent":"Child"}`;
+    el("stepLabel").textContent = (!isUserDone("parent") || !isUserDone("child")) ? "Step 2: Quiz" : "Step 3: Results";
+    renderIndexChips();
+    updateDestLabels();
+  }
+
+  function renderIndexChips(){
+    const list = el("qIndexList");
+    list.innerHTML="";
+    const arr = state.answers[state.user];
+    arr.forEach((a, i)=>{
+      const chip = document.createElement("div");
+      chip.className="chip";
+      chip.style.cursor="pointer";
+      chip.textContent = a===null ? `Q${i+1}` : `Q${i+1} ✓`;
+      chip.onclick=()=>{ state.qIndex=i; renderQ(); };
+      list.appendChild(chip);
+    });
+  }
+
+  function renderQ(){
+    const q = questions[state.qIndex];
+    el("qText").textContent = q.text;
+    el("qCounter").textContent = `Q${state.qIndex+1} / ${questions.length}`;
+    el("qSection").textContent = q.section;
+    const opts = el("qOptions"); opts.innerHTML="";
+
+    q.options.forEach((o, idx)=>{
+      const div = document.createElement("label");
+      div.className="opt";
+      const input = document.createElement("input");
+      input.type="radio"; input.name="opt"; input.value=idx;
+      const selected = state.answers[state.user][state.qIndex]===idx;
+      if(selected){ input.checked=true; div.classList.add("selected"); }
+      input.onchange=()=>{
+        state.answers[state.user][state.qIndex]=idx;
+        renderQ();
+      };
+      const span = document.createElement("div");
+      span.textContent=o.t;
+      div.appendChild(input); div.appendChild(span);
+      opts.appendChild(div);
+    });
+
+    el("bar").style.width = ((state.qIndex)/(questions.length-1))*100 + "%";
+
+    const nextBtn = el("nextBtn");
+    if(isUserDone("parent") && isUserDone("child")){
+      nextBtn.textContent="See results";
+    }else{
+      nextBtn.textContent = (state.qIndex===questions.length-1) ? "Finish this quiz" : "Next";
+    }
+  }
+
+  function prevQ(){
+    if(state.qIndex>0){ state.qIndex--; renderQ(); }
+    else{ showIntro(); scrollToSection("destinations"); }
+  }
+
+  function nextQ(){
+    if(state.answers[state.user][state.qIndex]===null){
+      alert("Please choose an option."); return;
+    }
+    if(state.qIndex < questions.length-1){
+      state.qIndex++; renderQ(); return;
+    }
+
+    const other = state.user==="parent" ? "child" : "parent";
+    if(!isUserDone(other)){
+      state.user = other;
+      state.qIndex = firstUnansweredIndex(other);
+      updateStepLabels();
+      renderQ();
+      window.scrollTo({top:0, behavior:"smooth"});
+      return;
+    }
+    showResults();
+  }
+
+  function isUserDone(user){ return state.answers[user].every(a => a!==null); }
+
+  function tally(user){
+    const scores = {Explorer:0, Relaxer:0, Shopper:0, Planner:0};
+    state.answers[user].forEach((a,i)=>{
+      const persona = questions[i].options[a].p;
+      scores[persona]++;
+    });
+    const sorted = Object.entries(scores).sort((x,y)=>y[1]-x[1]);
+    return {scores, primary:sorted[0][0], secondary:sorted[1][0]};
+  }
+
+  function fmtScores(scores){
+    return personas.map(p=>`${p[0]}:${scores[p]}`).join("  ");
+  }
+
+  function makePairKey(a,b){ return [a,b].sort().join("|"); }
+
+  // Destination-based plan assembly
+  function buildPlan(syncKey, destKey){
+    const d = destinations[destKey];
+    const zones = d.zones;
+
+    const baseBySync = {
+      "Explorer|Relaxer":[["Morning","culture"],["Midday","rest"],["Afternoon","discovery"],["Evening","evening"]],
+      "Explorer|Shopper":[["Morning","discovery"],["Midday","shopping"],["Afternoon","culture"],["Evening","evening"]],
+      "Explorer|Planner":[["Morning","culture"],["Midday","rest"],["Afternoon","discovery"],["Evening","evening"]],
+      "Relaxer|Shopper":[["Morning","rest"],["Midday","shopping"],["Afternoon","culture"],["Evening","evening"]],
+      "Planner|Relaxer":[["Morning","culture"],["Midday","rest"],["Afternoon","culture"],["Evening","evening"]],
+      "Planner|Shopper":[["Morning","culture"],["Midday","shopping"],["Afternoon","shopping"],["Evening","evening"]],
+    };
+    const blocks = baseBySync[syncKey] || [["Morning","culture"],["Midday","rest"],["Afternoon","discovery"],["Evening","evening"]];
+
+    function pick(list){ return list[Math.floor(Math.random()*list.length)]; }
+
+    return blocks.map(([label, zone])=>{
+      const suggestion = pick(zones[zone] || zones.culture);
+      const note =
+        zone==="rest" ? "comfort buffer" :
+        zone==="shopping" ? "browse & snack window" :
+        zone==="discovery" ? "flex / hidden lane" :
+        zone==="culture" ? "key highlight" :
+        "shared anchor";
+      return [label, suggestion, note];
+    });
+  }
+
+  function showResults(){
+    showResultsOnly();
+    updateStepLabels();
+
+    const pr = tally("parent");
+    const cr = tally("child");
+
+    el("parentRes").innerHTML = `<b>${pr.primary}</b> (secondary: ${pr.secondary}) — scores: ${fmtScores(pr.scores)}`;
+    el("childRes").innerHTML = `<b>${cr.primary}</b> (secondary: ${cr.secondary}) — scores: ${fmtScores(cr.scores)}`;
+
+    const primaryKey = makePairKey(pr.primary, cr.primary);
+    const alt1 = makePairKey(pr.primary, cr.secondary);
+    const alt2 = makePairKey(pr.secondary, cr.primary);
+
+    const sync = syncTypes[primaryKey] || syncTypes[alt1] || syncTypes[alt2] || fallbackSync(pr.primary, cr.primary);
+    const syncKeyUsed = syncTypes[primaryKey] ? primaryKey : (syncTypes[alt1] ? alt1 : (syncTypes[alt2] ? alt2 : primaryKey));
+
+    el("syncTitle").textContent = sync.name;
+    el("syncDesc").textContent = sync.desc;
+    el("cxHelp").textContent = sync.help;
+
+    const d = destinations[state.destination];
+    el("destNameInline").textContent = d.name;
+    el("destDetail").innerHTML = `<b>${d.name}</b> — ${d.vibe}`;
+    const heroImg = el("destHeroImg"); if(heroImg) heroImg.src = d.image;
+
+    // plan render
+    const planBox = el("planBox"); planBox.innerHTML="";
+    const plan = buildPlan(syncKeyUsed, state.destination);
+    plan.forEach(([label, text, note])=>{
+      const row = document.createElement("div");
+      row.className="row";
+      row.innerHTML = `<div style="min-width:72px"><b>${label}</b><br/><small>${note}</small></div>
+                       <div class="muted" style="flex:1">${text}</div>`;
+      planBox.appendChild(row);
+    });
+
+    // expectation cards
+    const expects = Array.from(new Set([...(sync.expects||[])]));
+    const exBox = el("expectBox"); exBox.innerHTML="";
+    expects.forEach(t=>{
+      const c = document.createElement("div"); c.className="chip"; c.textContent=t;
+      exBox.appendChild(c);
+    });
+
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+
+  function fallbackSync(a,b){
+    const name = `${a} × ${b}`;
+    return {
+      name:`Sync Duo: ${name}`,
+      desc:"You’re a unique combo. We’ll balance pace, comfort, and key highlights.",
+      help:"Cathay can help cluster must-dos close by, with flexible rest buffers.",
+      expects:["Let’s check in on energy.","One anchor moment is enough.","We can adjust together."]
+    };
+  }
+
+  function fullRestart(){
+    // reset everything
+    state.answers.parent.fill(null);
+    state.answers.child.fill(null);
+    state.user="parent";
+    state.qIndex=0;
+    showIntro();
+    updateStepLabels();
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+
+  function copyShare(){
+    const pr = tally("parent");
+    const cr = tally("child");
+    const primaryKey = makePairKey(pr.primary, cr.primary);
+    const sync = syncTypes[primaryKey] || fallbackSync(pr.primary, cr.primary);
+    const d = destinations[state.destination];
+    const text = `Cathay Family Sync — ${d.name}. Parent: ${pr.primary}, Child: ${cr.primary}. Sync Type: ${sync.name}.`;
+    navigator.clipboard.writeText(text).then(()=>alert("Share tile text copied."));
+  }
+
+  // init
+  initDestinations();
+  showIntro();
+  updateStepLabels();
+</script>
+</body>
+</html>
